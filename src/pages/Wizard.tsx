@@ -9,7 +9,6 @@ import InternshipsStep from "@/components/wizard/steps/InternshipsStep";
 import WorkExperienceStep from "@/components/wizard/steps/WorkExperienceStep";
 import ProjectsStep from "@/components/wizard/steps/ProjectsStep";
 import TechnicalProfilesStep from "@/components/wizard/steps/TechnicalProfilesStep";
-import AssessmentsStep from "@/components/wizard/steps/AssessmentsStep";
 import SocialResumeStep from "@/components/wizard/steps/SocialResumeStep";
 import ReviewSubmit from "@/components/wizard/ReviewSubmit";
 
@@ -18,7 +17,7 @@ const Wizard = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
 
-  const totalSteps = 8;
+  const totalSteps = 7;
 
   const updateFormData = (stepData: any) => {
     setFormData({ ...formData, ...stepData });
@@ -55,8 +54,6 @@ const Wizard = () => {
       case 6:
         return <TechnicalProfilesStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       case 7:
-        return <AssessmentsStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
-      case 8:
         return <SocialResumeStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       default:
         return null;

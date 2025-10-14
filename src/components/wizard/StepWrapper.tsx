@@ -1,37 +1,48 @@
+// src/components/wizard/steps/StepWrapper.tsx (or wherever it is)
 import { ReactNode } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-interface StepWrapperProps {
+export interface StepWrapperProps {
   title: string;
-  icon: ReactNode;
+  icon?: ReactNode;
+  onNext: () => void | Promise<void>;
+  onBack: () => void;
   children: ReactNode;
-  onNext: () => void;
-  onBack?: () => void;
-  showBack?: boolean;
+
+  // NEW (optional)
+  nextLabel?: string;       // e.g., "Saving...", "Next", "Review"
+  nextDisabled?: boolean;   // disable Next while saving
+  backLabel?: string;       // optional custom back label
 }
 
-const StepWrapper = ({ title, icon, children, onNext, onBack, showBack = true }: StepWrapperProps) => {
+const StepWrapper = ({
+  title,
+  icon,
+  onNext,
+  onBack,
+  children,
+  nextLabel = "Next",
+  nextDisabled = false,
+  backLabel = "Back",
+}: StepWrapperProps) => {
   return (
-    <Card className="p-8 hover-lift">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="text-4xl">{icon}</div>
-        <h2 className="text-3xl font-bold">{title}</h2>
+    <div className="space-y-6">
+      <div className="flex items-center gap-2">
+        {icon}
+        <h2 className="text-2xl font-semibold">{title}</h2>
       </div>
 
-      <div className="space-y-6 mb-8">{children}</div>
+      {children}
 
-      <div className="flex gap-4">
-        {showBack && onBack && (
-          <Button variant="secondary" onClick={onBack} className="flex-1">
-            Back
-          </Button>
-        )}
-        <Button onClick={onNext} className="flex-1">
-          Next
+      <div className="flex gap-3 justify-end">
+        <Button type="button" variant="outline" onClick={onBack}>
+          {backLabel}
+        </Button>
+        <Button type="button" onClick={onNext} disabled={nextDisabled}>
+          {nextLabel}
         </Button>
       </div>
-    </Card>
+    </div>
   );
 };
 
