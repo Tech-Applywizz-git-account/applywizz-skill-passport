@@ -13,6 +13,7 @@ export interface StepWrapperProps {
   nextLabel?: string;       // e.g., "Saving...", "Next", "Review"
   nextDisabled?: boolean;   // disable Next while saving
   backLabel?: string;       // optional custom back label
+  backDisabled?: boolean;   // disable Back
 }
 
 const StepWrapper = ({
@@ -24,6 +25,7 @@ const StepWrapper = ({
   nextLabel = "Next",
   nextDisabled = false,
   backLabel = "Back",
+  backDisabled = false,
 }: StepWrapperProps) => {
   return (
     <div className="space-y-6">
