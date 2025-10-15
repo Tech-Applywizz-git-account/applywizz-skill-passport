@@ -15,8 +15,10 @@ import JobDetails from "./pages/JobDetails";
 import SignUp from "./pages/SignUp";
 import SetPassword from "./pages/SetPassword";
 import { AuthProvider } from '@/context/AuthContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
-// import LoginPage from '@/pages/LoginPage';
+import HomeLayout from "@/pages/home/HomeLayout";
+import Dashboard from "@/pages/home/Dashboard";
+import MyDetails from "@/pages/home/MyDetails";
+import SkillPassport from "@/pages/home/SkillPassport";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,11 @@ const App = () => (
           <Route path="/set-password" element={<SetPassword />} />
             <Route path="/wizard" element={<Wizard />} />
           <Route path="/review" element={<Review />} />
+          <Route path="/home" element={<HomeLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="details" element={<MyDetails />} />
+          <Route path="passport" element={<SkillPassport />} />
+        </Route>
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/jobs/:jobId" element={<JobDetails />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

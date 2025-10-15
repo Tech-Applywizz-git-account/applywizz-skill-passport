@@ -16,56 +16,24 @@ const HRLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const COMPLETED_STATUS = "submitted"; // or "completed" based on your DB design
 
-  const routeByRole = (role?: string | null) => {
+  const routeByRole = (role?: string | null, profileStatus?: string | null) => {
     if (role === "client") {
-      navigate("/wizard");
+      // If no row yet, or not completed, send to wizard
+      if (!profileStatus || profileStatus !== COMPLETED_STATUS) {
+        navigate("/wizard");
+        return;
+      }
+      // completed → home
+      navigate("/home");
       return;
     }
+
     // default: HR/staff → jobs
     navigate("/jobs");
   };
 
-  // const handleLogin = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!email || !password) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Please enter both email and password",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   const { data, error } = await supabase.auth.signInWithPassword({
-  //     email: email.trim().toLowerCase(),
-  //     password,
-  //   });
-
-  //   if (error) {
-  //     setLoading(false);
-  //     const msg = error.message.includes("Email not confirmed")
-  //       ? "Email not confirmed. Please check your inbox/spam for the verification email."
-  //       : error.message || "Invalid email or password.";
-  //     toast({
-  //       title: "Login failed",
-  //       description: msg,
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   // Success → route to jobs (or wherever)
-  //   toast({
-  //     title: "Welcome back!",
-  //     description: "Logging you into HR Portal...",
-  //   });
-
-  //   setLoading(false);
-  //   navigate("/jobs");
-  // };
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -117,12 +85,37 @@ const HRLogin = () => {
       console.error("Failed to load user profile:", profileErr);
     }
 
-    toast({ title: "Welcome back!", description: "Logging you in..." });
+    let profileStatus: string | null = null;
+    if (profile?.role === "client") {
+      const { data: cp, error: cpErr } = await supabase
+        .from("client_profiles")
+        .select("profile_status")
+        .eq("client_id", userId)
+        .maybeSingle();
 
+      if (cpErr) {
+        console.error("Failed to load client profile_status:", cpErr);
+      } else {
+        profileStatus = cp?.profile_status ?? null;
+
+        // Optional: if your DB uses "approved" as the terminal state, map it to "completed"
+        // if (profileStatus === "approved") profileStatus = "completed";
+      }
+    }
+
+    toast({ title: "Welcome back!", description: "Logging you in..." });
     setLoading(false);
-    routeByRole(profile?.role ?? null);
+
+    // Pass both role and profileStatus to router helper
+    routeByRole(profile?.role ?? null, profileStatus);
   };
-  
+
+  //   toast({ title: "Welcome back!", description: "Logging you in..." });
+
+  //   setLoading(false);
+  //   routeByRole(profile?.role ?? null);
+  // };
+
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left - Branding */}
