@@ -52,7 +52,6 @@ const Review = () => {
             <ReviewSection title="Work Experience" icon="💼" />
             <ReviewSection title="Projects" icon="🌐" />
             <ReviewSection title="Technical Profiles" icon="⚙️" />
-            <ReviewSection title="Assessments" icon="🏅" />
             <ReviewSection title="Social & Resume" icon="📄" />
           </div>
 
@@ -85,7 +84,7 @@ const ReviewSection = ({ title, icon }: { title: string; icon: string }) => (
         <h3 className="font-semibold">{title}</h3>
       </div>
       <Button variant="ghost" size="sm">
-        Edit
+        Review and Edit
       </Button>
     </div>
   </div>
