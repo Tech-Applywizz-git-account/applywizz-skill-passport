@@ -80,6 +80,9 @@ const HomeLayout = () => {
                 <SidebarLink to="/home/details" icon={UserCircle2}>
                   My Details
                 </SidebarLink>
+                {/* <SidebarLink to="/home/passport" icon={BadgeCheck}>
+                  Skill Passport
+                </SidebarLink> */}
                 <SidebarLink to="/home/passport" icon={BadgeCheck}>
                   Skill Passport
                 </SidebarLink>

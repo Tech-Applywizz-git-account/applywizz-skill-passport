@@ -19,6 +19,7 @@ import HomeLayout from "@/pages/home/HomeLayout";
 import Dashboard from "@/pages/home/Dashboard";
 import MyDetails from "@/pages/home/MyDetails";
 import SkillPassport from "@/pages/home/SkillPassport";
+import CandidateOverview from "@/pages/CandidateOverview";
 
 const queryClient = new QueryClient();
 
@@ -38,7 +39,8 @@ const App = () => (
           <Route path="/home" element={<HomeLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="details" element={<MyDetails />} />
-          <Route path="passport" element={<SkillPassport />} />
+          {/* <Route path="passport" element={<SkillPassport />} /> */}
+          <Route path="passport" element={<CandidateOverview />} />
         </Route>
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/jobs/:jobId" element={<JobDetails />} />
