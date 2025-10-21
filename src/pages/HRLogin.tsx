@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Wallet, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { Eye, EyeOff } from "lucide-react";
 
 
 const HRLogin = () => {
@@ -17,6 +18,7 @@ const HRLogin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const COMPLETED_STATUS = "submitted"; // or "completed" based on your DB design
+  const [showPassword, setShowPassword] = useState(false);
 
   const routeByRole = (role?: string | null, profileStatus?: string | null) => {
     if (role === "client") {
@@ -204,14 +206,25 @@ const HRLogin = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="pr-10" // space for icon
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between">
