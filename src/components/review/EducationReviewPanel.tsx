@@ -1,3 +1,5 @@
+// src/components/review/EducationReviewPanel.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

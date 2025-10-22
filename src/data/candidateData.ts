@@ -1,3 +1,5 @@
+// src/data/candidateData.ts
+
 export const candidateData = {
   name: "Rohit Kumar",
   role: "Full-stack Engineer",
