@@ -1,4 +1,5 @@
 // src/components/wizard/steps/SocialResumeStep.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import { FileText, Upload } from "lucide-react";
 import StepWrapper from "../StepWrapper";

@@ -11,6 +11,8 @@ import WorkExperienceReviewPanel from "@/components/review/WorkExperienceReviewP
 import ProjectsReviewPanel from "@/components/review/ProjectsReviewPanel";
 import TechnicalProfilesReviewPanel from "@/components/review/TechnicalProfilesReviewPanel";
 import SocialResumeReviewPanel from "@/components/review/SocialResumeReviewPanel";
+import PersonalInfoReviewPanel from "@/components/review/PersonalInfoReviewPanel";
+
 
 type SectionProps = {
   title: string;
@@ -84,6 +86,10 @@ const ReviewCard = ({ showSubmit = true }: { showSubmit?: boolean }) => {
       </p>
 
       <div className="space-y-6 mb-8">
+        <ReviewSection title="Personal Details" icon="🧾" defaultOpen>
+          <PersonalInfoReviewPanel />
+        </ReviewSection>
+
         <ReviewSection title="Education" icon="🎓" defaultOpen>
           <EducationReviewPanel />
         </ReviewSection>

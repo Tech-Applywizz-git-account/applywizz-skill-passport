@@ -1,4 +1,5 @@
 // src/components/wizard/steps/TechnicalProfilesStep.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import { Code2, Plus, X } from "lucide-react";
 import StepWrapper from "../StepWrapper";

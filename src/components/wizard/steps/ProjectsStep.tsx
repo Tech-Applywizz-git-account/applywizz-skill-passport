@@ -1,4 +1,5 @@
 // src/components/wizard/steps/ProjectsStep.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import { FolderGit2, Plus, X } from "lucide-react";
 import StepWrapper from "../StepWrapper";

@@ -10,6 +10,7 @@ import WorkExperienceStep from "@/components/wizard/steps/WorkExperienceStep";
 import ProjectsStep from "@/components/wizard/steps/ProjectsStep";
 import TechnicalProfilesStep from "@/components/wizard/steps/TechnicalProfilesStep";
 import SocialResumeStep from "@/components/wizard/steps/SocialResumeStep";
+import PersonalInfoStep from "@/components/wizard/steps/PersonalInfoStep";
 import ReviewSubmit from "@/components/wizard/ReviewSubmit";
 
 const Wizard = () => {
@@ -17,7 +18,7 @@ const Wizard = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
 
-  const totalSteps = 7;
+  const totalSteps = 8;
 
   const updateFormData = (stepData: any) => {
     setFormData({ ...formData, ...stepData });
@@ -42,18 +43,20 @@ const Wizard = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <EducationStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
+        return <PersonalInfoStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       case 2:
-        return <CertificationsStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
+        return <EducationStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       case 3:
-        return <InternshipsStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
+        return <CertificationsStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       case 4:
-        return <WorkExperienceStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
+        return <InternshipsStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       case 5:
-        return <ProjectsStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
+        return <WorkExperienceStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       case 6:
-        return <TechnicalProfilesStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
+        return <ProjectsStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       case 7:
+        return <TechnicalProfilesStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
+      case 8:
         return <SocialResumeStep onNext={handleNext} onBack={handleBack} updateFormData={updateFormData} />;
       default:
         return null;

@@ -1,3 +1,5 @@
+// src/components/wizard/steps/AssessmentsStep.tsx
+
 import { Trophy } from "lucide-react";
 import StepWrapper from "../StepWrapper";
 import { Card } from "@/components/ui/card";
