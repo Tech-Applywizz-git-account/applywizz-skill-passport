@@ -1,4 +1,4 @@
-// src/components/wizard/steps/StepWrapper.tsx (or wherever it is)
+// src/components/wizard/steps/StepWrapper.tsx
 import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 

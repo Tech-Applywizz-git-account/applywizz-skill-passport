@@ -18,9 +18,6 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-// ----------------------------
-// Types (match your DB schema)
-// ----------------------------
 type CertItem = {
   certificate_name: string;          // e.g., "AWS"
   issuing_organization: string;      // e.g., "nxtwave"
@@ -31,9 +28,6 @@ type CertItem = {
   file?: string | null;              // optional file/url string for now
 };
 
-// ----------------------------
-// Helpers
-// ----------------------------
 function parseMaybeJsonArray(v: unknown): any[] {
   if (Array.isArray(v)) return v;
   if (typeof v === "string") {

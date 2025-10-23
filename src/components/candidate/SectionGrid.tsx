@@ -39,7 +39,7 @@ export const SectionGrid = ({ sections, onSectionClick }: SectionGridProps) => {
               {/* Content */}
               <div className="flex-1 min-w-0 space-y-2">
                 <h3 className="font-semibold text-foreground text-base tracking-tight">
-                  {section.title}
+                  {section.title} 
                 </h3>
                 <p className="text-sm text-secondary line-clamp-2">
                   {section.summary}

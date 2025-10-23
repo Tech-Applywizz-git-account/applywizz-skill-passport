@@ -55,20 +55,35 @@ const InternshipsStep = ({ onNext, onBack, updateFormData, initialInternships }:
   const addInternship = () => setInternships(prev => [...prev, { ...emptyRow }]);
   const removeInternship = (index: number) => setInternships(prev => prev.filter((_, i) => i !== index));
 
-  // OPTIONAL: upload a certificate file to Supabase Storage and return public URL
-  const uploadCertificateIfNeeded = async (clientId: string, item: InternshipItem, idx: number) => {
-    if (!item.certificate || typeof item.certificate === "string") return item.certificate ?? null; // already URL or empty
-    const file = item.certificate as File;
+  // 1) Make the helper’s return type explicit and never return a File
+  const uploadCertificateIfNeeded = async (
+    clientId: string,
+    item: InternshipItem,
+    idx: number
+  ): Promise<string | null> => {
+    const cert = item.certificate;
+
+    // nothing to upload
+    if (!cert) return null;
+
+    // already a URL string from DB
+    if (typeof cert === "string") return cert;
+
+    // it's a File -> upload it and return a public URL
+    const file = cert as File;
     const ext = file.name.split(".").pop() || "pdf";
     const path = `internships/${clientId}/${Date.now()}_${idx}.${ext}`;
-    const { error: upErr } = await supabase.storage.from("client-docs").upload(path, file, {
-      cacheControl: "3600",
-      upsert: false,
-    });
+
+    const { error: upErr } = await supabase
+      .storage
+      .from("client-docs")
+      .upload(path, file, { cacheControl: "3600", upsert: false });
+
     if (upErr) {
       console.error("Storage upload error:", upErr);
-      return null; // fall back to null on failure
+      return null;
     }
+
     const { data: pub } = supabase.storage.from("client-docs").getPublicUrl(path);
     return pub?.publicUrl ?? null;
   };

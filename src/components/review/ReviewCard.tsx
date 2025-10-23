@@ -90,7 +90,7 @@ const ReviewCard = ({ showSubmit = true }: { showSubmit?: boolean }) => {
           <PersonalInfoReviewPanel />
         </ReviewSection>
 
-        <ReviewSection title="Education" icon="🎓" defaultOpen>
+        <ReviewSection title="Education" icon="🎓" >
           <EducationReviewPanel />
         </ReviewSection>
 

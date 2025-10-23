@@ -1,7 +1,15 @@
+//src/components/candidate/DetailModal.tsx
+
 import { X, Download, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+
+// helper to force a real download from Supabase public URLs
+function getDownloadUrl(url: string, filename = "download"): string {
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}download=${encodeURIComponent(filename)}`;
+}
 
 interface DetailModalProps {
   section: string;
@@ -11,7 +19,7 @@ interface DetailModalProps {
 
 export const DetailModal = ({ section, candidate, onClose }: DetailModalProps) => {
   const sectionData = candidate.sectionDetails[section];
-  
+
   if (!sectionData) return null;
 
   return (
@@ -74,19 +82,33 @@ export const DetailModal = ({ section, candidate, onClose }: DetailModalProps) =
                 </div>
               )}
 
-              {item.files && (
+              {item.files && item.files.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {item.files.map((file: any, fileIdx: number) => (
-                    <Button
-                      key={fileIdx}
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                    >
-                      <Download className="h-3 w-3" />
-                      {file.name}
-                    </Button>
-                  ))}
+                  {item.files.map(
+                    (file: { name?: string; url: string }, fileIdx: number) => {
+                      const label = file?.name || "Download";
+                      const href = getDownloadUrl(file.url, label);
+                      return (
+                        <Button
+                          key={fileIdx}
+                          variant="outline"
+                          size="sm"
+                          className="gap-2"
+                          asChild
+                        >
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            download
+                          >
+                            <Download className="h-3 w-3" />
+                            {label}
+                          </a>
+                        </Button>
+                      );
+                    }
+                  )}
                 </div>
               )}
 

@@ -1,3 +1,5 @@
+//src/components/wizard/StepProgress.tsx
+
 import { cn } from "@/lib/utils";
 
 interface StepProgressProps {

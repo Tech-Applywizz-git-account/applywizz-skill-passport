@@ -328,10 +328,16 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
         details: {
           Description: i?.responsibilities ?? "",
           Domain: i?.domain ?? undefined,
-          Duration: i?.from || i?.to ? `${i?.from ?? ""}${i?.to ? ` – ${i.to}` : ""}` : undefined,
+          Duration: i?.from || i?.to ? `${i?.from ?? ""}${i?.to ? `  to  ${i.to}` : ""}` : undefined,
         },
         chips: [i?.domain, i?.role].filter(Boolean),
-        files: i?.certificate ? [{ name: "Internship Certificate", url: i.certificate }] : [],
+        // files: i?.certificate ? [{ name: "Internship Certificate", url: i.certificate }] : [],
+        files: i?.certificate
+          ? [{
+            name: decodeURIComponent((i.certificate as string).split("/").pop() || "Internship-Certificate"),
+            url: i.certificate as string
+          }]
+          : [],
       })),
     },
     work: {
@@ -345,7 +351,16 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
           Location: w?.location ?? undefined,
         },
         chips: [w?.role, w?.company].filter(Boolean),
-        files: Array.isArray(w?.documents) ? w.documents.map((d: any) => ({ name: d?.name ?? "Doc", url: d?.url ?? "#" })) : [],
+        // files: Array.isArray(w?.documents) ? w.documents.map((d: any) => ({ name: d?.name ?? "Doc", url: d?.url ?? "#" })) : [],
+        files: Array.isArray(w?.documents)
+          ? w.documents.map((d: any) => {
+            if (typeof d === "string") {
+              const fileName = decodeURIComponent(d.split("/").pop() || "Document");
+              return { name: fileName, url: d };
+            }
+            return { name: d?.name ?? "Document", url: d?.url ?? "#" };
+          })
+          : [],
       })),
     },
     projects: {
@@ -363,7 +378,17 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
           ...(p?.github ? [{ label: "GitHub", url: p.github }] : []),
           ...(p?.case_study ? [{ label: "Case Study", url: p.case_study }] : []),
         ],
-        files: Array.isArray(p?.files) ? p.files.map((f: any) => ({ name: f?.name ?? "File", url: f?.url ?? "#" })) : [],
+        // files: Array.isArray(p?.files) ? p.files.map((f: any) => ({ name: f?.name ?? "File", url: f?.url ?? "#" })) : [],
+        files: Array.isArray(p?.files)
+          ? p.files.map((f: any) => {
+            if (typeof f === "string") {
+              const fileName = decodeURIComponent(f.split("/").pop() || "File");
+              return { name: fileName, url: f };
+            }
+            // if DB ever stores objects like { name, url }
+            return { name: f?.name ?? "File", url: f?.url ?? "#" };
+          })
+          : [],
       })),
     },
     tech: {
