@@ -25,6 +25,8 @@ type PersonalInfo = {
   expected_salary_usd: number | null;
   available_in_days: number | null;
   phone: string;
+  present_company?: string;
+  present_role?: string;
   updated_at?: string;
 };
 
@@ -37,6 +39,8 @@ function emptyPI(): PersonalInfo {
     expected_salary_usd: null,
     available_in_days: null,
     phone: "",
+    present_company: "",
+    present_role: "",
   };
 }
 
@@ -116,6 +120,8 @@ const PersonalInfoReviewPanel = () => {
           typeof dbObj?.available_in_days === "number" ? dbObj.available_in_days : null,
         phone: dbObj?.phone ?? "",
         updated_at: dbObj?.updated_at,
+        present_company: dbObj?.present_company ?? "",
+        present_role: dbObj?.present_role ?? "",
       };
 
       setForm(normalized);
@@ -164,6 +170,8 @@ const PersonalInfoReviewPanel = () => {
         available_in_days: form.available_in_days,
         phone: form.phone.trim(),
         updated_at: new Date().toISOString(),
+        present_company: form.present_company.trim(),
+        present_role: form.present_role.trim(),
       };
 
       // If column were TEXT (legacy), stringify; JSONB is fine with object
@@ -254,6 +262,32 @@ const PersonalInfoReviewPanel = () => {
                   onChange={(e) => change("email", e.target.value)}
                 />
               </div>
+            </div>
+
+            {/* Present Company */}
+            <div>
+                <Label>Present Company</Label>
+                <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    <Input
+                    placeholder="Google"
+                    value={form.present_company}
+                    onChange={(e) => change("present_company", e.target.value)}
+                    />
+                </div>
+            </div>
+
+            {/* Present Role */}
+            <div>
+                <Label>Present Role</Label>
+                <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    <Input
+                    placeholder="Software Engineer"
+                    value={form.present_role}
+                    onChange={(e) => change("present_role", e.target.value)}
+                    />
+                </div>
             </div>
 
             {/* Location */}

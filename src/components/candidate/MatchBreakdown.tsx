@@ -1,3 +1,5 @@
+// src/components/candidate/MatchBreakdown.tsx
+
 import { useState } from "react";
 import { Info } from "lucide-react";
 import { Button } from "@/components/ui/button";

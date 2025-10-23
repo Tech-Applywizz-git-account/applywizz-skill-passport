@@ -16,6 +16,8 @@ type PersonalInfo = {
   expected_salary_usd: number | null;    // e.g., 60000
   available_in_days: number | null;      // e.g., 7, 15, 30
   phone: string;                         // keep as typed string
+  present_company?: string;
+  present_role?: string;
 };
 
 interface Props {
@@ -34,6 +36,8 @@ const PersonalInfoStep = ({ onNext, onBack, updateFormData, initialPersonalInfo 
     expected_salary_usd: null,
     available_in_days: null,
     phone: "",
+    present_company: "",
+    present_role: "",
   }), []);
 
   const [form, setForm] = useState<PersonalInfo>(empty);
@@ -113,6 +117,8 @@ const PersonalInfoStep = ({ onNext, onBack, updateFormData, initialPersonalInfo 
           expected_salary_usd: (typeof pi.expected_salary_usd === "number" ? pi.expected_salary_usd : null),
           available_in_days: (typeof pi.available_in_days === "number" ? pi.available_in_days : null),
           phone: pi.phone ?? "",
+          present_company: pi.present_company ?? "",
+          present_role: pi.present_role ?? "",
         };
 
         if (!cancelled) {
@@ -163,6 +169,8 @@ const PersonalInfoStep = ({ onNext, onBack, updateFormData, initialPersonalInfo 
         expected_salary_usd: form.expected_salary_usd,
         available_in_days: form.available_in_days,
         phone: form.phone.trim(),
+        present_company: form.present_company?.trim() || null,
+        present_role: form.present_role?.trim() || null,
         updated_at: new Date().toISOString()
       };
 
@@ -220,6 +228,24 @@ const PersonalInfoStep = ({ onNext, onBack, updateFormData, initialPersonalInfo 
                 onChange={(e) => change("email", e.target.value)}
                 placeholder="john.doe@gmail.com"
                 type="email"
+              />
+            </div>
+
+            <div>
+              <Label>Present company</Label>
+              <Input
+                value={form.present_company}
+                onChange={(e) => change("present_company", e.target.value)}
+                placeholder="ABC Corp"
+              />
+            </div>
+
+            <div>
+              <Label>Present role</Label>
+              <Input
+                value={form.present_role}
+                onChange={(e) => change("present_role", e.target.value)}
+                placeholder="Software Engineer"
               />
             </div>
 

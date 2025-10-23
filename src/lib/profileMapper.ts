@@ -1,5 +1,8 @@
+// src/lib/profileMapper.ts
+
 export type RawClientProfile = {
   client_id: string;
+  personal_info: any;
   education: any;
   certifications: any;
   internships: any;
@@ -45,8 +48,15 @@ export type CandidateSection =
 export interface CandidateLike {
   name?: string;
   role?: string;
+  company?: string;
   location?: string;
+  email?: string;
+  phone?: string;
+  availability?: number | null; // in days
+  expectedSalary?: number | null;         // formatted "$60,000"
+  noticePeriod?: number | string;
   avatar?: string | null;
+
   sections: Array<{
     id: CandidateSection;
     title: string;
@@ -163,6 +173,7 @@ function normalizeSkillsToStrings(raw: any): string[] {
 }
 
 export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
+  const personal_info = parseMaybeJson<any>(raw.personal_info, {});
   const education = parseMaybeJson<any[]>(raw.education, []);
   const certifications = parseMaybeJson<any[]>(raw.certifications, []);
   const internships = parseMaybeJson<any[]>(raw.internships, []);
@@ -171,6 +182,36 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
   const technical_profiles = parseMaybeJson<any>(raw.technical_profiles, {});
   const assessments = parseMaybeJson<any[]>(raw.assessments, []);
   const social_resume = parseMaybeJson<any>(raw.social_resume, {});
+
+  // ---- top-level summary fields from personal_info ----
+  const name =
+    personal_info?.full_name ??
+    personal_info?.name ??
+    undefined;
+
+  const role =
+    personal_info?.present_role ??
+    personal_info?.role ??
+    undefined;
+
+  const company =
+    personal_info?.present_company ??
+    personal_info?.company ??
+    undefined;
+
+  const location = personal_info?.location ?? undefined;
+  const email = personal_info?.email ?? undefined;
+  const phone = personal_info?.phone ?? undefined;
+
+  // const availability = personal_info?.available_in_days ?? "—";
+  // const expectedSalary = personal_info?.expected_salary_usd;
+  // const noticePeriod = personal_info?.notice_period_days ?? "—";
+  const availability = typeof personal_info?.available_in_days === "number" ? personal_info.available_in_days : null;
+  const expectedSalary = typeof personal_info?.expected_salary_usd === "number" ? personal_info.expected_salary_usd : null;
+  const noticePeriod = typeof personal_info?.notice_period_days === "number" ? personal_info.notice_period_days : null;
+
+
+
 
   // IMPORTANT: normalize skills to string[]
   const skills: string[] = normalizeSkillsToStrings(technical_profiles?.skills);
@@ -315,8 +356,8 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
         chips: Array.isArray(p?.tech_stack)
           ? normalizeSkillsToStrings(p.tech_stack)
           : (p?.tech_stack
-              ? String(p.tech_stack).split(/[,\s]+/).filter(Boolean)
-              : []),
+            ? String(p.tech_stack).split(/[,\s]+/).filter(Boolean)
+            : []),
         links: [
           ...(p?.url ? [{ label: "Live / Repo", url: p.url }] : []),
           ...(p?.github ? [{ label: "GitHub", url: p.github }] : []),
@@ -363,6 +404,15 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
   };
 
   return {
+    name,
+    role,
+    company,
+    location,
+    email,
+    phone,
+    availability,
+    expectedSalary,
+    noticePeriod,
     sections,
     sectionDetails,
   };
