@@ -16,7 +16,6 @@ const SocialResumeReviewPanel = () => {
   const emptyPayload = useMemo<SocialResumePayload>(() => ({ resumeUrl: null }), []);
   const [payload, setPayload] = useState<SocialResumePayload>(emptyPayload);
 
-  // Local UI state: track a new selected file (File) OR keep existing (string) OR null
   const [selected, setSelected] = useState<File | string | null>(null);
 
   const [hydrating, setHydrating] = useState(true);

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { CheckCircle, Loader2, ChevronDown, ChevronUp } from "lucide-react";
-
 import EducationReviewPanel from "@/components/review/EducationReviewPanel";
 import CertificationReviewPanel from "@/components/review/CertificationReviewPanel";
 import InternshipReviewPanel from "@/components/review/InternshipReviewPanel";

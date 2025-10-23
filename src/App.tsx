@@ -14,7 +14,6 @@ import Jobs from "./pages/Jobs";
 import JobDetails from "./pages/JobDetails";
 import SignUp from "./pages/SignUp";
 import SetPassword from "./pages/SetPassword";
-import { AuthProvider } from '@/context/AuthContext';
 import HomeLayout from "@/pages/home/HomeLayout";
 import Dashboard from "@/pages/home/Dashboard";
 import MyDetails from "@/pages/home/MyDetails";
