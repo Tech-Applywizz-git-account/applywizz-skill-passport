@@ -82,35 +82,53 @@ export const DetailModal = ({ section, candidate, onClose }: DetailModalProps) =
                 </div>
               )}
 
-              {item.files && item.files.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {item.files.map(
-                    (file: { name?: string; url: string }, fileIdx: number) => {
-                      const label = file?.name || "Download";
-                      const href = getDownloadUrl(file.url, label);
-                      return (
-                        <Button
-                          key={fileIdx}
-                          variant="outline"
-                          size="sm"
-                          className="gap-2"
-                          asChild
-                        >
-                          <a
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            download
-                          >
-                            <Download className="h-3 w-3" />
-                            {label}
-                          </a>
-                        </Button>
-                      );
-                    }
-                  )}
-                </div>
-              )}
+           {item.files && item.files.length > 0 && !["skills", "education"].includes(section.toLowerCase()) && (
+  <div className="flex flex-wrap gap-2">
+    {item.files.map((file: { name?: string; url: string }, fileIdx: number) => {
+      // Detect resume section
+      const isResume =
+        section.toLowerCase() === "social" ||
+        file?.name?.toLowerCase()?.includes("resume");
+
+      // Keep original Supabase file URL (no modification)
+      const fileUrl = file.url;
+
+      return isResume ? (
+        // 🟩 Resume → Download button
+        <Button
+          key={fileIdx}
+          variant="outline"
+          size="sm"
+          className="gap-2"
+          asChild
+        >
+          <a href={getDownloadUrl(fileUrl, file.name ?? "resume.pdf")} download>
+            <Download className="h-3 w-3" />
+            Download Resume
+          </a>
+        </Button>
+      ) : (
+        // 🟦 Other sections → open file in new tab + dynamic label
+        <Button
+          key={fileIdx}
+          variant="outline"
+          size="sm"
+          className="gap-2"
+          onClick={() => window.open(fileUrl, "_blank", "noopener,noreferrer")}
+        >
+          {section.toLowerCase() === "certifications" && "View Certificate"}
+          {section.toLowerCase() === "internships" && "View Internship"}
+          {section.toLowerCase() === "education" && "View Education Document"}
+          {section.toLowerCase() === "work" && "View Work Experience Document"}
+          {section.toLowerCase() === "projects" && "View Project"}
+          {section.toLowerCase() === "tech" && "View Tech Profile"}
+          {!["certifications","internships","education","work","projects","tech"].includes(section.toLowerCase()) && "View File"}
+        </Button>
+      );
+    })}
+  </div>
+)}
+
 
               {item.links && (
                 <div className="flex flex-wrap gap-2">

@@ -65,49 +65,67 @@ const WorkExperienceStep = ({
   const removeExperience = (index: number) => setExperiences((prev) => prev.filter((_, i) => i !== index));
 
   // ---- Storage helpers ----
-  const uploadDocsIfNeeded = async (clientId: string, item: WorkItem, idx: number) => {
-    if (!item.documents || item.documents.length === 0) return [];
+const uploadDocsIfNeeded = async (clientId: string, item: WorkItem, idx: number) => {
+  if (!item.documents || item.documents.length === 0) return [];
 
-    const urls: (string | null)[] = [];
-    for (let f = 0; f < item.documents.length; f++) {
-      const doc = item.documents[f];
-      // keep already-saved URL strings as-is
-      if (typeof doc === "string") {
-        urls.push(doc);
-        continue;
-      }
+  console.log("🟡 UploadDocsIfNeeded triggered for Work Experience index:", idx);
+  console.log("📂 Client ID:", clientId);
+  console.log("📁 Files to upload:", item.documents);
 
-      const safe = doc.name.replace(/[^\w.\-]+/g, "_");
-      const ext = safe.split(".").pop() || "pdf";
-      const path = `work-experience/${clientId}/${Date.now()}_${idx}_${f}.${ext}`;
+  const urls: (string | null)[] = [];
+  for (let f = 0; f < item.documents.length; f++) {
+    const doc = item.documents[f];
 
-      const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, doc, {
-        cacheControl: "3600",
-        upsert: false,
-      });
-      if (upErr) {
-        console.error("Storage upload error:", upErr);
+    // keep already-saved URL strings as-is
+    if (typeof doc === "string") {
+      console.log("ℹ️ Skipping existing URL:", doc);
+      urls.push(doc);
+      continue;
+    }
+
+    // ✅ Sanitize filename & build upload path
+    const safe = doc.name.replace(/[^\w.\-]+/g, "_");
+    const ext = safe.split(".").pop() || "pdf";
+    const path = `work-experience/${clientId}/${Date.now()}_${idx}_${f}.${ext}`;
+
+    // 🪶 Debug logs
+    console.log("🚀 Uploading work experience document:", safe);
+    console.log("➡️ Full path:", path);
+
+    // ✅ Upload file to Supabase storage
+    const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, doc, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+    if (upErr) {
+      console.error("❌ Storage upload error:", upErr);
+      urls.push(null);
+      continue;
+    }
+
+    // ✅ Generate public or signed URL depending on your bucket settings
+    if (isBucketPublic) {
+      const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
+      console.log("✅ Public URL generated:", pub?.publicUrl);
+      urls.push(pub?.publicUrl ?? null);
+    } else {
+      const { data: signed, error: sErr } = await supabase.storage
+        .from(BUCKET)
+        .createSignedUrl(path, 60 * 60 * 24 * 7);
+      if (sErr) {
+        console.error("⚠️ Signed URL error:", sErr);
         urls.push(null);
-        continue;
-      }
-
-      if (isBucketPublic) {
-        const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
-        urls.push(pub?.publicUrl ?? null);
       } else {
-        const { data: signed, error: sErr } = await supabase.storage
-          .from(BUCKET)
-          .createSignedUrl(path, 60 * 60 * 24 * 7);
-        if (sErr) {
-          console.error("Signed URL error:", sErr);
-          urls.push(null);
-        } else {
-          urls.push(signed?.signedUrl ?? null);
-        }
+        console.log("✅ Signed URL generated:", signed?.signedUrl);
+        urls.push(signed?.signedUrl ?? null);
       }
     }
-    return urls;
-  };
+  }
+
+  console.log("🏁 Upload complete. URLs collected:", urls);
+  return urls;
+};
 
   // ---- DB <-> UI mapping ----
   const toDbPayload = (items: WorkItem[], uploadedPerExp: (string | null)[][]) =>
