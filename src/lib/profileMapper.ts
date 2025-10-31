@@ -315,7 +315,14 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
           },
           chips,
           links,
-          files: c?.file ? [{ name: "Certificate", url: c.file }] : [],
+   files: c?.file
+  ? [{
+      name: "Certificate",
+      url: c.file,  // ✅ keep the original Supabase public URL untouched
+    }]
+  : [],
+
+
         };
       }),
     },
@@ -352,15 +359,22 @@ export function mapProfileToCandidate(raw: RawClientProfile): CandidateLike {
         },
         chips: [w?.role, w?.company].filter(Boolean),
         // files: Array.isArray(w?.documents) ? w.documents.map((d: any) => ({ name: d?.name ?? "Doc", url: d?.url ?? "#" })) : [],
-        files: Array.isArray(w?.documents)
-          ? w.documents.map((d: any) => {
-            if (typeof d === "string") {
-              const fileName = decodeURIComponent(d.split("/").pop() || "Document");
-              return { name: fileName, url: d };
-            }
-            return { name: d?.name ?? "Document", url: d?.url ?? "#" };
-          })
-          : [],
+       files: Array.isArray(w?.documents)
+  ? w.documents.map((d: any) => {
+      const url =
+        typeof d === "string"
+          ? d // ✅ use the original Supabase public URL directly
+          : d?.url ?? "#";
+
+      const fileName =
+        typeof d === "string"
+          ? decodeURIComponent(d.split("/").pop() || "Document")
+          : d?.name ?? "Document";
+
+      return { name: fileName, url };
+    })
+  : [],
+
       })),
     },
     projects: {

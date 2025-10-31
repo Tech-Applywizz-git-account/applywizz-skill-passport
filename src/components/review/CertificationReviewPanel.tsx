@@ -17,6 +17,7 @@ import {
   File as FileIcon,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { uploadToClientDocs } from "@/lib/upload";
 
 type CertItem = {
   certificate_name: string;          // e.g., "AWS"
@@ -326,16 +327,48 @@ const CertificationReviewPanel = () => {
 
                 {/* File (optional URL for now) */}
                 <div className="md:col-span-2">
-                  <Label>File URL (Optional)</Label>
-                  <div className="flex items-center gap-2">
-                    <FileIcon className="w-4 h-4 text-muted-foreground" />
-                    <Input
-                      type="url"
-                      placeholder="https://example.com/certificates/aws.pdf"
-                      value={row.file ?? ""}
-                      onChange={(e) => handleChange(index, "file", e.target.value)}
-                    />
-                  </div>
+                <Label>Upload Certificate (PDF)</Label>
+<div className="flex items-center gap-2">
+  <FileIcon className="w-4 h-4 text-muted-foreground" />
+  <input
+    type="file"
+    accept="application/pdf"
+    onChange={async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const { data: userResp } = await supabase.auth.getUser();
+        const client_id = userResp?.user?.id;
+        if (!client_id) {
+          alert("User not logged in.");
+          return;
+        }
+
+        // ✅ Upload to Supabase Storage
+        const publicUrl = await uploadToClientDocs(file, client_id, "certifications");
+
+        // ✅ Save the public URL to your current row
+        handleChange(index, "file", publicUrl);
+        alert("File uploaded successfully!");
+      } catch (err) {
+        console.error("Upload error:", err);
+        alert("Upload failed. Please try again.");
+      }
+    }}
+  />
+  {row.file && (
+    <a
+      href={row.file}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 underline text-sm"
+    >
+      View Uploaded File
+    </a>
+  )}
+</div>
+
                 </div>
               </div>
             </div>
